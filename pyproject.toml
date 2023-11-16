@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'mangum_extra_handlers'
+version = "0.0.1"
+license = {text = "MIT License"}
+authors = [
+  { name="SirPaulO", email="me@sirpauloliver.com" },
+]
+dependencies = [
+    "mangum==0.17.0",
+]
+keywords = ["fastapi", "mangum", "hamdler", "sqs", "sns", "eventbridge", "websocket"]
+description = 'Extra handlers for Mangum'
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/SirPaulO/mangum_extra_handlers"
+"Bug Tracker" = "https://github.com/SirPaulO/mangum_extra_handlers/issues"
+"Repository" = "https://github.com/SirPaulO/mangum_extra_handlers.git"
