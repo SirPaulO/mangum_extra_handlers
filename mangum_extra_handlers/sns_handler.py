@@ -3,36 +3,38 @@ from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Sco
 
 
 class SNSHandler:
-    # noinspection PyUnusedLocal
-    @classmethod
-    def infer(cls, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> bool:
-        if (event.get("Records") and type(event.get("Records")) is list and len(event.get("Records")) == 1 and
-                event.get("Records")[0].get("EventSource") and event.get("Records")[0].get("EventSource") == "aws:sns"):
-            return True
-        return False
 
     def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:
+        super().__init__(event, context, config)
         self.event = event
         self.context = context
         self.config = config
 
+    @classmethod
+    @classmethod
+    def infer(cls, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> bool:
+        records = event.get("Records")
+        if type(records) is not list or len(records) < 1:
+            return False
+
+        source = records[0].get("eventSource")
+        if type(source) is str and source == "aws:sns":
+            return True
+
+        return False
+
     @property
     def body(self) -> bytes:
-        return maybe_encode_body(
-            self.event["Records"][0]["Sns"].get("Message", b""),
-            is_base64=self.event.get("isBase64Encoded", False),
-        )
+        return json.dumps(self.event.get("Records")).encode("utf-8")
 
     @property
     def scope(self) -> Scope:
-        topic = self.event["Records"][0]["Sns"]["TopicArn"].split(":")[-1]
-        subject = self.event["Records"][0]["Sns"]["Subject"]
         return {
             "type": "http",
             "http_version": "1.1",
             "method": "POST",
             "headers": [],
-            "path": f"/internal/sns/{topic}/{subject}",
+            "path": "/internal/sns",
             "raw_path": None,
             "root_path": "",
             "scheme": "https",

@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = 'mangum_extra_handlers'
-version = "0.0.1"
+version = "0.1.0"
 license = {text = "MIT License"}
 authors = [
   { name="SirPaulO", email="me@sirpauloliver.com" },
 ]
 dependencies = [
-    "mangum==0.17.0",
+    "mangum~=0.17.0",
 ]
 keywords = ["fastapi", "mangum", "hamdler", "sqs", "sns", "eventbridge", "websocket"]
 description = 'Extra handlers for Mangum'

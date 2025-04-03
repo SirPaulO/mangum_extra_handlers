@@ -1,0 +1,21 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:{partition}:sns:EXAMPLE",
+      "Sns": {
+        "Type" : "Notification",
+        "MessageId" : "d7d9dcf3-c2cf-52ed-b7e1-*********",
+        "TopicArn" : "arn:aws:sns:us-east-1:****:********",
+        "Subject" : "EXAMPLE-MESSAGE",
+        "Message" : "{\"test\":\"Ok\"}",
+        "Timestamp" : "2022-07-26T17:10:30.748Z",
+        "SignatureVersion" : "1",
+        "Signature" : "********",
+        "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-*******.pem",
+        "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:******:*****:*******"
+      }
+    }
+  ]
+}

@@ -1,49 +1,52 @@
 from mangum.handlers.utils import handle_base64_response_body, handle_multi_value_headers, maybe_encode_body
 from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Scope, LambdaHandler
+import json
 
 
 class SQSHandler(LambdaHandler):
 
-    @classmethod
-    def infer(cls, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> bool:
-        if (event.get("Records") and type(event.get("Records")) is list and len(event.get("Records")) == 1 and
-                event.get("Records")[0].get("eventSource") and event.get("Records")[0].get("eventSource") == "aws:sqs"):
-            return True
-        return False
-
-    def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:  # noqa
+    def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:
+        super().__init__(event, context, config)
         self.event = event
         self.context = context
         self.config = config
 
+    @classmethod
+    def infer(cls, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> bool:
+        records = event.get("Records")
+        if type(records) is not list or len(records) < 1:
+            return False
+
+        source = records[0].get("eventSource")
+        if type(source) is str and source == "aws:sqs":
+            return True
+
+        return False
+
     @property
     def body(self) -> bytes:
-        return maybe_encode_body(
-            self.event["Records"][0].get("body", b""),
-            is_base64=self.event.get("isBase64Encoded", False),
-        )
+        return json.dumps(self.event.get("Records")).encode("utf-8")
 
     @property
     def scope(self) -> Scope:
-        caller = self.event["Records"][0]["eventSourceARN"].split(":")[-1]
         return {
             "type": "http",
             "http_version": "1.1",
             "method": "POST",
             "headers": [],
-            "path": f"/internal/sqs/{caller}",
+            "path": "/internal/sqs",
             "raw_path": None,
             "root_path": "",
             "scheme": "https",
             "query_string": [],
-            "server": None,
+            "server": None,  # tuple of (host, port)
             "client": (
                 "0.0.0.0",
                 0,
             ),
             "asgi": {"version": "3.0", "spec_version": "2.0"},
             "aws.event": self.event,
-            "aws.context": None,
+            "aws.context": self.context,
         }
 
     def __call__(self, response: Response) -> dict:
