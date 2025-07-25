@@ -1,21 +1,22 @@
 import json
 
 from mangum.handlers.utils import handle_base64_response_body, handle_multi_value_headers, maybe_encode_body
-from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Scope
+from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Scope, LambdaHandler
 
 
-class WebSocketHandler:
+class WebSocketHandler(LambdaHandler):
+
+    def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:
+        self.event = event
+        self.context = context
+        self.config = config
+
     # noinspection PyUnusedLocal
     @classmethod
     def infer(cls, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> bool:
         if "requestContext" in event and "routeKey" in event["requestContext"]:
             return True
         return False
-
-    def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:
-        self.event = event
-        self.context = context
-        self.config = config
 
     @property
     def body(self) -> bytes:

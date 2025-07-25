@@ -1,8 +1,8 @@
-from mangum.handlers.utils import handle_base64_response_body, handle_multi_value_headers, maybe_encode_body
-from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Scope
+from mangum.handlers.utils import handle_base64_response_body, handle_multi_value_headers
+from mangum.types import LambdaConfig, LambdaContext, LambdaEvent, Response, Scope, LambdaHandler
 
 
-class SNSHandler:
+class SNSHandler(LambdaHandler):
 
     def __init__(self, event: LambdaEvent, context: LambdaContext, config: LambdaConfig) -> None:
         super().__init__(event, context, config)
